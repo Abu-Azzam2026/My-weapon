@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سجل المركبات والسائقين</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --gold: #d4af37;
+            --gold2: #f0c040;
+            --text: #e6edf3;
+            --sub: #8b949e;
+            --border: #30363d;
+            --input: #21262d;
+            --red: #da3633;
+            --green: #2ea043;
+            --shadow: rgba(0,0,0,0.5);
+            --btn-text: #2b1a00;
+        }
+        .light-mode {
+            --bg: #f0f2f5;
+            --card: #ffffff;
+            --gold: #b8860b;
+            --gold2: #d4a017;
+            --text: #1a1a1a;
+            --sub: #555555;
+            --border: #cccccc;
+            --input: #ffffff;
+            --shadow: rgba(0,0,0,0.1);
+            --btn-text: #ffffff;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+            overflow-y: auto;
+            transition: background 0.3s, color 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container { max-width: 550px; width: 100%; margin: auto; position: relative; }
+        .logo {
+            display: block;
+            width: 120px;
+            height: auto;
+            margin: 0 auto 20px;
+            filter: drop-shadow(0 0 12px rgba(212,175,55,0.6));
+        }
+        h1 {
+            text-align: center;
+            color: var(--gold);
+            margin-bottom: 6px;
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            min-height: 36px;
+        }
+        .sub {
+            text-align: center;
+            color: var(--sub);
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 24px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px var(--shadow);
+            transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .card h3 {
+            color: var(--gold2);
+            margin-bottom: 20px;
+            font-size: 18px;
+            border-bottom: 2px solid var(--gold);
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        .section-title {
+            color: var(--gold);
+            font-size: 14px;
+            font-weight: 700;
+            margin: 20px 0 12px 0;
+            padding-top: 12px;
+            border-top: 1px dashed var(--border);
+            text-align: center;
+        }
+
+        .form-group { margin-bottom: 16px; }
+        label { display: block; font-size: 13px; font-weight: 600; color: var(--sub); margin-bottom: 6px; }
+        input, select {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212,175,55,0.1);
+        }
+        .hint {
+            font-size: 11px;
+            color: var(--sub);
+            margin-top: 4px;
+            opacity: 0.8;
+        }
+        .field-complete {
+            animation: glowPulse 0.6s ease-out;
+            border-color: var(--gold) !important;
+        }
+        @keyframes glowPulse {
+            0% { box-shadow: 0 0 0 0 rgba(212,175,55,0.4); }
+            100% { box-shadow: 0 0 0 12px rgba(212,175,55,0); }
+        }
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-3px); }
+        }
+        .shake { animation: shake 0.4s ease-in-out; }
+
+        .btn3d {
+            position: relative;
+            top: -4px;
+            border: 0;
+            transition: all 40ms linear;
+            margin-top: 12px;
+            margin-bottom: 8px;
+            outline: none !important;
+            -webkit-tap-highlight-color: transparent;
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 14px;
+            cursor: pointer;
+            font-family: inherit;
+            letter-spacing: 1px;
+            text-align: center;
+            color: var(--btn-text);
+            box-shadow: 0 0 0 1px #c9a020 inset, 0 0 0 2px rgba(255,255,255,0.15) inset, 0 8px 0 0 #6b4c0a, 0 8px 8px 1px rgba(0,0,0,0.5);
+            background: linear-gradient(180deg, #fde482 0%, #e6b422 50%, #aa7c11 100%);
+        }
+        .btn3d:active {
+            top: 2px;
+            box-shadow: 0 0 0 1px #c9a020 inset, 0 0 0 2px rgba(255,255,255,0.15) inset, 0 0 0 0 #6b4c0a, 0 1px 3px 1px rgba(0,0,0,0.3);
+        }
+        .btn3d:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            animation: none;
+        }
+        @keyframes pulseBtn {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+        .pulse-animation { animation: pulseBtn 1s ease-in-out infinite; }
+
+        @keyframes goldFade {
+            0% { box-shadow: 0 0 20px var(--gold); border-color: var(--gold); }
+            100% { box-shadow: 0 0 0 rgba(212,175,55,0); border-color: var(--border); }
+        }
+        .gold-flash { animation: goldFade 1s ease-out; }
+
+        .modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(6px);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000; visibility: hidden; opacity: 0;
+            transition: visibility 0.3s, opacity 0.3s;
+        }
+        .modal.active { visibility: visible; opacity: 1; }
+        .modal-box {
+            background: var(--card);
+            border: 1px solid var(--gold);
+            border-radius: 20px;
+            padding: 28px 22px;
+            text-align: center;
+            color: var(--text);
+            max-width: 340px; width: 90%;
+            box-shadow: 0 12px 40px var(--shadow);
+        }
+        .modal-box p { margin-bottom: 20px; font-size: 16px; line-height: 1.6; }
+        .modal-box .verse {
+            color: var(--gold);
+            font-family: 'Cairo', serif;
+            font-size: 18px;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-10px);
+        }
+
+        .progress-ring {
+            display: none;
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+        .progress-ring svg { width: 60px; height: 60px; }
+        .progress-ring .bg { fill: none; stroke: var(--border); stroke-width: 4; }
+        .progress-ring .fill { fill: none; stroke: var(--gold); stroke-width: 4; stroke-linecap: round; transition: stroke-dashoffset 0.3s; }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--sub);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+        .footer .ar { font-family: 'Cairo', sans-serif; font-weight: 600; color: var(--gold); }
+        .footer .en { font-family: 'Cairo', sans-serif; font-size: 11px; opacity: 0.8; }
+
+        .theme-toggle {
+            position: fixed;
+            top: 16px; right: 16px;
+            background: var(--card);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            width: 42px; height: 42px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            z-index: 500;
+            box-shadow: 0 2px 12px var(--shadow);
+            transition: 0.3s;
+        }
+        .theme-toggle:hover { background: var(--gold); color: #000; }
+    </style>
+</head>
+<body>
+
+    <div class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙</div>
+
+    <!-- نافذة الترحيب -->
+    <div class="modal active" id="welcomeModal">
+        <div class="modal-box">
+            <p id="greetingMsg"></p>
+            <p>أهلاً بك في سجل المركبات والسائقين</p>
+            <p style="font-size:14px; color:var(--sub);">يرجى إدخال جميع البيانات بدقة.</p>
+            <button class="btn3d" onclick="closeWelcome()">دخول</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <img src="https://i.ibb.co/4gWkBBqM/Picsart-26-05-18-14-54-16-077.png" alt="الشعار" class="logo">
+        <h1 id="mainTitle"></h1>
+        <p class="sub">القوة التنفيذية - القسم الجنوبي</p>
+
+        <div class="card" id="mainCard">
+            <h3>تسجيل مركبة وسائق</h3>
+
+            <!-- قسم المركبة -->
+            <div class="section-title">بيانات المركبة</div>
+            <div class="form-group">
+                <label>نوع السيارة *</label>
+                <input type="text" id="vehicleType" placeholder="مثال: تويوتا، هيونداي، كيا..." required oninput="validateField(this)">
+            </div>
+            <div class="form-group">
+                <label>رقم السيارة *</label>
+                <input type="text" id="plateNumber" placeholder="أدخل رقم السيارة كاملاً" required oninput="validateField(this)">
+            </div>
+
+            <!-- قسم السائق الأساسي -->
+            <div class="section-title">السائق الأساسي</div>
+            <div class="form-group">
+                <label>الاسم الثلاثي للسائق *</label>
+                <input type="text" id="driverName" placeholder="الاسم الكامل للسائق" required oninput="validateField(this)">
+            </div>
+            <div class="form-group">
+                <label>الرقم العسكري للسائق *</label>
+                <input type="text" id="driverMilitaryId" placeholder="الرقم العسكري للسائق" required oninput="validateField(this)">
+            </div>
+
+            <!-- قسم السائق البديل -->
+            <div class="section-title">السائق البديل</div>
+            <div class="form-group">
+                <label>الاسم الثلاثي للسائق البديل *</label>
+                <input type="text" id="coDriverName" placeholder="الاسم الكامل للسائق البديل" required oninput="validateField(this)">
+            </div>
+            <div class="form-group">
+                <label>الرقم العسكري للسائق البديل *</label>
+                <input type="text" id="coDriverMilitaryId" placeholder="الرقم العسكري للسائق البديل" required oninput="validateField(this)">
+            </div>
+
+            <button class="btn3d" id="addBtn" onclick="submitVehicle()">تسجيل المركبة</button>
+            <div class="progress-ring" id="progressRing">
+                <svg viewBox="0 0 60 60">
+                    <circle class="bg" cx="30" cy="30" r="26"/>
+                    <circle class="fill" id="progressCircle" cx="30" cy="30" r="26" stroke-dasharray="163.36" stroke-dashoffset="163.36"/>
+                </svg>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="ar">تصميم وتطوير أبو عزام</div>
+            <div class="en">Design by Abu Azzam 🍂</div>
+        </div>
+    </div>
+
+    <!-- نافذة النجاح -->
+    <div class="modal" id="successModal">
+        <div class="modal-box">
+            <p class="verse">﴿ وَأَعِدُّوا لَهُم مَّا اسْتَطَعْتُم مِّن قُوَّةٍ ﴾</p>
+            <p>تم تسجيل المركبة بنجاح.</p>
+            <p style="font-size:14px; color:var(--sub);">جزاك الله خيراً على دقتك وأمانتك.</p>
+            <button class="btn3d" onclick="document.getElementById('successModal').classList.remove('active')">موافق</button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyEtg7NwE1Mlf9qGycfiKlzZmfiyMmdq1S9pyygDjkT2pa5WAchv9_9EZmhle0X3-s4Gw/exec';
+        let audioCtx = null;
+
+        // الوضع الليلي
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const isLight = document.body.classList.contains('light-mode');
+            document.getElementById('themeToggle').textContent = isLight ? '☀️' : '🌙';
+            localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        }
+        (function() {
+            if (localStorage.getItem('theme') === 'light') {
+                document.body.classList.add('light-mode');
+                document.getElementById('themeToggle').textContent = '☀️';
+            }
+        })();
+
+        // الأصوات
+        function getAudioCtx() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); return audioCtx; }
+        function playSound(freq, duration, vol, type = 'sine') {
+            try {
+                const ctx = getAudioCtx();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = type;
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(vol, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+                osc.start(ctx.currentTime); osc.stop(ctx.currentTime + duration);
+            } catch (e) {}
+        }
+        function playClick() { playSound(800, 0.05, 0.2); }
+        function playSuccess() { playSound(600, 0.1, 0.3, 'triangle'); setTimeout(() => playSound(900, 0.1, 0.3, 'triangle'), 100); }
+        function playError() { playSound(200, 0.2, 0.3, 'sawtooth'); }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        // تحية ذكية
+        (function() {
+            const hour = new Date().getHours();
+            let greeting = 'بسم الله الرحمن الرحيم';
+            if (hour < 12) greeting = 'صباح الخير';
+            else if (hour < 18) greeting = 'مساء الخير';
+            else greeting = 'مساء الخير';
+            document.getElementById('greetingMsg').textContent = greeting;
+        })();
+
+        // الكتابة التلقائية
+        (function() {
+            const title = 'سجل المركبات والسائقين';
+            const el = document.getElementById('mainTitle');
+            let i = 0;
+            function type() {
+                if (i < title.length) {
+                    el.textContent += title.charAt(i);
+                    i++;
+                    setTimeout(type, 60);
+                }
+            }
+            type();
+        })();
+
+        // وميض الحقول
+        function validateField(field) {
+            if (field.value.trim() !== '') {
+                field.classList.add('field-complete');
+                setTimeout(() => field.classList.remove('field-complete'), 600);
+            }
+            checkAllFields();
+        }
+
+        // التحقق من اكتمال الحقول
+        function checkAllFields() {
+            const fields = [
+                document.getElementById('vehicleType'),
+                document.getElementById('plateNumber'),
+                document.getElementById('driverName'),
+                document.getElementById('driverMilitaryId'),
+                document.getElementById('coDriverName'),
+                document.getElementById('coDriverMilitaryId')
+            ];
+            const allFilled = fields.every(f => f.value.trim() !== '');
+            const btn = document.getElementById('addBtn');
+            if (allFilled && !btn.classList.contains('pulse-animation')) {
+                btn.classList.add('pulse-animation');
+            } else if (!allFilled) {
+                btn.classList.remove('pulse-animation');
+            }
+        }
+
+        function closeWelcome() {
+            document.getElementById('welcomeModal').classList.remove('active');
+        }
+
+        // إرسال البيانات
+        async function submitVehicle() {
+            const vehicleType = document.getElementById('vehicleType').value.trim();
+            const plateNumber = document.getElementById('plateNumber').value.trim();
+            const driverName = document.getElementById('driverName').value.trim();
+            const driverMilitaryId = document.getElementById('driverMilitaryId').value.trim();
+            const coDriverName = document.getElementById('coDriverName').value.trim();
+            const coDriverMilitaryId = document.getElementById('coDriverMilitaryId').value.trim();
+
+            const fields = [
+                { el: document.getElementById('vehicleType'), val: vehicleType },
+                { el: document.getElementById('plateNumber'), val: plateNumber },
+                { el: document.getElementById('driverName'), val: driverName },
+                { el: document.getElementById('driverMilitaryId'), val: driverMilitaryId },
+                { el: document.getElementById('coDriverName'), val: coDriverName },
+                { el: document.getElementById('coDriverMilitaryId'), val: coDriverMilitaryId }
+            ];
+            let hasEmpty = false;
+            fields.forEach(f => {
+                if (!f.val) {
+                    f.el.classList.add('shake');
+                    setTimeout(() => f.el.classList.remove('shake'), 400);
+                    hasEmpty = true;
+                }
+            });
+            if (hasEmpty) {
+                playError();
+                showToast('الرجاء ملء جميع الحقول');
+                return;
+            }
+
+            const addBtn = document.getElementById('addBtn');
+            addBtn.disabled = true;
+            addBtn.classList.remove('pulse-animation');
+            addBtn.textContent = 'جاري التسجيل...';
+
+            const ring = document.getElementById('progressRing');
+            ring.style.display = 'block';
+            const circle = document.getElementById('progressCircle');
+            const circumference = 163.36;
+            circle.style.strokeDashoffset = circumference;
+
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                const offset = circumference - (progress / 100) * circumference;
+                circle.style.strokeDashoffset = offset;
+                if (progress >= 90) clearInterval(interval);
+            }, 150);
+
+            const payload = {
+                vehicleType,
+                plateNumber,
+                driverName,
+                driverMilitaryId,
+                coDriverName,
+                coDriverMilitaryId
+            };
+
+            try {
+                await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                clearInterval(interval);
+                circle.style.strokeDashoffset = 0;
+                setTimeout(() => {
+                    ring.style.display = 'none';
+                    document.getElementById('mainCard').classList.add('gold-flash');
+                    setTimeout(() => document.getElementById('mainCard').classList.remove('gold-flash'), 1000);
+
+                    document.getElementById('vehicleType').value = '';
+                    document.getElementById('plateNumber').value = '';
+                    document.getElementById('driverName').value = '';
+                    document.getElementById('driverMilitaryId').value = '';
+                    document.getElementById('coDriverName').value = '';
+                    document.getElementById('coDriverMilitaryId').value = '';
+
+                    addBtn.disabled = false;
+                    addBtn.textContent = 'تسجيل المركبة';
+                    document.getElementById('successModal').classList.add('active');
+                    playSuccess();
+                    showToast('تم التسجيل بنجاح');
+                }, 300);
+            } catch (e) {
+                clearInterval(interval);
+                ring.style.display = 'none';
+                addBtn.disabled = false;
+                addBtn.textContent = 'تسجيل المركبة';
+                playError();
+                showToast('فشل الاتصال');
+            }
+        }
+    </script>
+</body>
+</html>
